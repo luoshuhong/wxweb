@@ -5,7 +5,7 @@
 
 <struts>
 	<package name="wx" extends="struts-default" namespace="/wx">
-		<action name="verify" class="verifyAction" method="verify"> </action>
+		<action name="deal" class="wxAction" method="deal"> </action>
 	</package>
 	
 	

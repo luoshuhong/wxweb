@@ -16,7 +16,7 @@
         </property>
     </bean>
     
-    <bean id="verifyAction" class="com.lsh.wxweb.action.VerifyAction"></bean>
+    <bean id="wxAction" class="com.lsh.wxweb.action.WxAction"></bean>
     
     
     
