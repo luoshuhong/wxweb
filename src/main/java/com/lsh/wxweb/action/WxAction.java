@@ -5,12 +5,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URLEncoder;
 import java.util.Arrays;
 
 import org.apache.log4j.Logger;
 
 import com.lsh.wxweb.common.Constants;
 import com.lsh.wxweb.common.EncryptUtils;
+import com.lsh.wxweb.common.HttpUtils;
 import com.lsh.wxweb.common.XMLParse;
 import com.lsh.wxweb.model.ReceiveXmlMsg;
 
@@ -30,6 +34,13 @@ public class WxAction extends BasicAction {
 	 * @return
 	 */
 	public void deal() {
+//		try {
+//			this.getRequest().setCharacterEncoding("UTF-8");
+//		} catch (UnsupportedEncodingException e) {
+//			e.printStackTrace();
+//		}
+		this.getResponse().setCharacterEncoding("UTF-8");
+		
 		System.out.println("---method:" + this.getRequest().getMethod());
 		if (dealMsg()) {
 			return;
@@ -43,6 +54,14 @@ public class WxAction extends BasicAction {
 	 * @return
 	 */
 	public boolean dealMsg() {
+		//下面与发送消息有关
+//		String encrypt_type = this.getRequest().getParameter("encrypt_type");
+//		String msg_signature = this.getRequest().getParameter("msg_signature");
+//		String signature = this.getRequest().getParameter("signature");
+//		String timestamp = this.getRequest().getParameter("timestamp");
+//		String nonce = this.getRequest().getParameter("nonce");
+//		String echostr = this.getRequest().getParameter("echostr");
+		
 		InputStream input = null;
 		BufferedReader reader = null;
 		PrintWriter out = null;
@@ -65,12 +84,19 @@ public class WxAction extends BasicAction {
 			ReceiveXmlMsg revMsg = XMLParse.extract(xmltext);
 			System.out.println("---revMsg:" + revMsg.getContent() + ";fromUser=" + revMsg.getFromUserName());
 			
+			if ("你好".equals(revMsg.getContent())) {
+				System.out.println("---if: 你好！--" + revMsg.getContent());
+			} else {
+				System.out.println("---else: 你好！--" + revMsg.getContent());
+			}
+			
 			ReceiveXmlMsg recMsg = new ReceiveXmlMsg();
-			recMsg.setContent(revMsg.getContent());
+//			recMsg.setContent("你好" + new String(revMsg.getContent().getBytes("utf-8"),"ISO-8859-1"));
+			recMsg.setContent("你好" + revMsg.getContent());
 			recMsg.setFromUserName(revMsg.getToUserName());
 			recMsg.setToUserName(revMsg.getFromUserName());
 			String revXmlText = XMLParse.wrapText(recMsg);
-			//回复
+			// 回复
 			out = this.getResponse().getWriter();
 			out.write(revXmlText);
 			return true;
@@ -107,10 +133,6 @@ public class WxAction extends BasicAction {
 			String nonce = this.getRequest().getParameter("nonce");
 			String echostr = this.getRequest().getParameter("echostr");
 			
-			//下面与发送消息有关
-//					String encrypt_type = this.getRequest().getParameter("encrypt_type");
-//					String msg_signature = this.getRequest().getParameter("msg_signature");
-			
 			/**
 			 * 加密/校验流程如下：
 				1. 将token、timestamp、nonce三个参数进行字典序排序
@@ -140,5 +162,46 @@ public class WxAction extends BasicAction {
 			e.printStackTrace();
 			logger.info(e.getMessage());
 		} 
+	}
+	
+	/*********************************************************/
+	/**
+	 * 测试通过微信浏览器打开获取用户信息
+	 */
+	public void getUserInfo() {
+		String appid = "wx7da410e7b5d045fe"; // 微信公众号
+		String secret = "296133f3ae1c0fb26daff3596014ec6c";// 应用密钥
+        
+		String channelId = this.getRequest().getParameter("code");
+		String code = this.getRequest().getParameter("state");
+		System.out.println("method=getUserInfo,step=start,code=" + code + ",cId=" + channelId);
+
+		code = code == null ? "null" : code;
+		channelId = channelId == null ? "null" : channelId;
+		
+		//通过code获取openid
+		String url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code";
+		url.replace("APPID", appid);
+		url.replace("SECRET", secret);
+		url.replace("CODE", code);
+		try {
+			System.out.println("method=getUserInfo,step=getOpenId start");
+			String result = HttpUtils.doHttpGet(url);
+			System.out.println("method=getUserInfo,step=getOpenId end,result=" + result);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		//重定向
+		try {
+			this.getResponse().sendRedirect("http://www.zhe800.com/");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void main(String[] args) throws UnsupportedEncodingException {
+		System.out.println(URLEncoder.encode("http://lovinging.duapp.com/wx/getUserInfo"));
+//		https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx7da410e7b5d045fe&redirect_uri=http%3A%2F%2Flovinging.duapp.com%2Fwx%2FgetUserInfo&response_type=code&scope=snsapi_base&state=zhilian#wechat_redirect
 	}
 }

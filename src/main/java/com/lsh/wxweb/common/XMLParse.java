@@ -49,17 +49,21 @@ public class XMLParse {
 			NodeList msgType = root.getElementsByTagName("MsgType");
 			NodeList content = root.getElementsByTagName("Content");
 			NodeList msgId = root.getElementsByTagName("MsgId");
+			
 			model.setContent(content.item(0).getTextContent());
 			model.setToUserName(toUserName.item(0).getTextContent());
 			model.setFromUserName(fromUserName.item(0).getTextContent());
 			model.setCreateTime(createTime.item(0).getTextContent());
 			model.setMsgType(msgType.item(0).getTextContent());
 			model.setMsgId(msgId.item(0).getTextContent());
-//			model.setToUserName(new String(toUserName.item(0).getTextContent().getBytes(),"utf-8"));
-//			model.setFromUserName(new String(fromUserName.item(0).getTextContent().getBytes(),"utf-8"));
-//			model.setCreateTime(new String(createTime.item(0).getTextContent().getBytes(),"utf-8"));
-//			model.setMsgType(new String(msgType.item(0).getTextContent().getBytes(),"utf-8"));
-//			model.setMsgId(new String(msgId.item(0).getTextContent().getBytes(),"utf-8"));
+			
+//			model.setContent(new String(content.item(0).getTextContent().getBytes("iso-8859-1")));
+//			model.setToUserName(new String(toUserName.item(0).getTextContent().getBytes("ISO-8859-1"),"utf-8"));
+//			model.setFromUserName(new String(fromUserName.item(0).getTextContent().getBytes("ISO-8859-1"),"utf-8"));
+//			model.setCreateTime(new String(createTime.item(0).getTextContent().getBytes("ISO-8859-1"),"utf-8"));
+//			model.setMsgType(new String(msgType.item(0).getTextContent().getBytes("ISO-8859-1"),"utf-8"));
+//			model.setMsgId(new String(msgId.item(0).getTextContent().getBytes("ISO-8859-1"),"utf-8"));
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -51,6 +51,11 @@
 		<version>${spring.version}</version>
 	</dependency>
 	<dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-aspects</artifactId>
+         <version>${spring.version}</version>
+     </dependency>
+	<dependency>
 		<groupId>commons-beanutils</groupId>
 		<artifactId>commons-beanutils</artifactId>
 		<version>1.8.0</version>
@@ -123,6 +128,11 @@
 <!-- 	  <type>pom</type> -->
 <!-- 	</dependency> -->
 
+	<dependency>
+	  <groupId>commons-codec</groupId>
+	  <artifactId>commons-codec</artifactId>
+	  <version>20041127.091804</version>
+	</dependency>
 
 
   </dependencies>

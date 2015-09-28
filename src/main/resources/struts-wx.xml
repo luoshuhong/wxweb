@@ -6,6 +6,7 @@
 <struts>
 	<package name="wx" extends="struts-default" namespace="/wx">
 		<action name="deal" class="wxAction" method="deal"> </action>
+		<action name="getUserInfo" class="wxAction" method="getUserInfo"> </action>
 	</package>
 	
 	
